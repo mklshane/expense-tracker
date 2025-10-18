@@ -17,6 +17,16 @@ const App = () => {
       expense.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       expense.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleEdit = (expense) => {
+    setEditingExpense(expense);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this expense?")) {
+      deleteExpense(id);
+    }
+  };
  
 
   const handleSaveExpense = (expenseData) => {
@@ -45,7 +55,7 @@ const App = () => {
 
         {/* Expenses Card */}
         <div className="mb-8">
-          <ExpenseCard total={totalExpenses} />
+          <ExpenseCard total={totalExpenses} onAddExpense={handleAddExpense}/>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
