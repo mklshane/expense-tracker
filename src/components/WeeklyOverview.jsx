@@ -150,7 +150,7 @@ const WeeklyOverview = ({ expenses = [] }) => {
                       >
                         <div>
                           <p className="font-medium text-gray-900">
-                            {expense.title}
+                            {expense.description}
                           </p>
                           <p className="text-sm text-gray-500">
                             {new Date(expense.date).toLocaleDateString(

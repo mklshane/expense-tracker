@@ -2,22 +2,36 @@ import { useState, useEffect } from "react";
 
 const ExpenseModal = ({ expense, onClose, onSave }) => {
   const [formData, setFormData] = useState({
-    title: "",
     description: "",
+    tags: [],
     amount: "",
     date: new Date().toISOString().split("T")[0],
   });
+  const [tagInput, setTagInput] = useState("");
 
   useEffect(() => {
     if (expense) {
       setFormData({
-        title: expense.title,
         description: expense.description,
+        tags: ensureTagsArray(expense.tags),
         amount: expense.amount.toString(),
         date: expense.date,
       });
     }
   }, [expense]);
+
+  const ensureTagsArray = (tags) => {
+    if (Array.isArray(tags)) {
+      return tags;
+    }
+    if (typeof tags === "string" && tags.trim()) {
+      return tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag);
+    }
+    return [];
+  };
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -26,9 +40,46 @@ const ExpenseModal = ({ expense, onClose, onSave }) => {
     }));
   };
 
+  const handleTagInput = (e) => {
+    const value = e.target.value;
+    setTagInput(value);
+
+    // check if user pressed space or comma to finalize tag
+    if (value.endsWith(" ") || value.endsWith(",")) {
+      addTag(value.slice(0, -1).trim());
+    }
+  };
+
+  const handleTagKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (tagInput.trim()) {
+        addTag(tagInput.trim());
+      }
+    }
+  };
+
+  const addTag = (tagText) => {
+    const cleanTag = tagText.replace(/^#/, "").trim(); // remove leading # if present
+    if (cleanTag && !formData.tags.includes(cleanTag)) {
+      setFormData((prev) => ({
+        ...prev,
+        tags: [...prev.tags, cleanTag],
+      }));
+    }
+    setTagInput("");
+  };
+
+  const removeTag = (indexToRemove) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((_, index) => index !== indexToRemove),
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.title || !formData.amount) {
+    if (!formData.description || !formData.amount) {
       alert("Please fill in all required fields");
       return;
     }
@@ -47,31 +98,58 @@ const ExpenseModal = ({ expense, onClose, onSave }) => {
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title *
+              Description *
             </label>
             <input
               type="text"
-              name="title"
-              value={formData.title}
+              name="description"
+              value={formData.description}
               onChange={handleChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-transparent transition-all duration-200"
-              placeholder="Enter expense title"
+              placeholder="Enter expense description"
               required
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description
+              Tags
             </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows="3"
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-transparent transition-all duration-200 resize-none"
-              placeholder="Enter expense description"
-            />
+            <div className="space-y-2">
+              {/* Tags display */}
+              {formData.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {formData.tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm"
+                    >
+                      #{tag}
+                      <button
+                        type="button"
+                        onClick={() => removeTag(index)}
+                        className="hover:text-purple-900 focus:outline-none"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Tag input */}
+              <input
+                type="text"
+                value={tagInput}
+                onChange={handleTagInput}
+                onKeyDown={handleTagKeyDown}
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-transparent transition-all duration-200"
+                placeholder="Type tags and press Enter, space, or comma. Use # to start (optional)"
+              />
+              <p className="text-xs text-gray-500">
+                Press Enter, space, or comma to add tags. 
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

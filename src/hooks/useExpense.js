@@ -11,19 +11,39 @@ export const useExpenses = () => {
       if (savedExpenses) {
         const parsedExpenses = JSON.parse(savedExpenses);
         if (Array.isArray(parsedExpenses)) {
-          setExpenses(parsedExpenses);
+          // migrate old data: convert tags from string to array if needed
+          const migratedExpenses = parsedExpenses.map((expense) => ({
+            ...expense,
+            tags: migrateTags(expense.tags),
+          }));
+          setExpenses(migratedExpenses);
         }
       }
     } catch (error) {
       console.error("Error loading expenses from localStorage:", error);
-      // If there's an error, start with empty array
+
       setExpenses([]);
     } finally {
       setIsLoaded(true);
     }
   }, []);
 
-  // save expenses to localStorage 
+  // helper function to migrate tags from string to array
+  const migrateTags = (tags) => {
+    if (Array.isArray(tags)) {
+      return tags;
+    }
+    if (typeof tags === "string" && tags.trim()) {
+      // convert comma-separated string to array, or create array from single string
+      return tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag);
+    }
+    return [];
+  };
+
+  // save expenses to localStorage
   useEffect(() => {
     if (isLoaded) {
       try {
@@ -37,8 +57,8 @@ export const useExpenses = () => {
   const addExpense = (expense) => {
     const newExpense = {
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-      title: expense.title.trim(),
-      description: expense.description?.trim() || "",
+      description: expense.description.trim(),
+      tags: expense.tags || [],
       amount: parseFloat(expense.amount),
       date: expense.date || new Date().toISOString().split("T")[0],
     };
@@ -51,8 +71,8 @@ export const useExpenses = () => {
         expense.id === id
           ? {
               ...expense,
-              title: updatedExpense.title.trim(),
-              description: updatedExpense.description?.trim() || "",
+              description: updatedExpense.description.trim(),
+              tags: updatedExpense.tags || [],
               amount: parseFloat(updatedExpense.amount),
               date: updatedExpense.date,
             }
@@ -78,4 +98,4 @@ export const useExpenses = () => {
     totalExpenses,
     isLoaded,
   };
-}
+};
