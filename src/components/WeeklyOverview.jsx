@@ -48,7 +48,7 @@ const WeeklyOverview = ({ expenses = [] }) => {
 
   const weeklyExpenses = getWeeklyExpenses();
 
-  // ✅ Instead of using maxExpense, use totalExpenses for proportional distribution
+  // use totalExpenses for proportional distribution
   const totalExpenses = weeklyExpenses.reduce(
     (sum, week) => sum + week.total,
     0
