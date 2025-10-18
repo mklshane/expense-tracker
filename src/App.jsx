@@ -59,7 +59,7 @@ const App = () => {
           <ExpenseCard total={totalExpenses} onAddExpense={handleAddExpense} />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-10">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
               <h2 className="text-xl font-semibold text-gray-900">

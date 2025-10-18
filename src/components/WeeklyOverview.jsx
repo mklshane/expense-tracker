@@ -1,4 +1,8 @@
+import { useState } from "react";
+
 const WeeklyOverview = ({ expenses = [] }) => {
+  const [expandedWeek, setExpandedWeek] = useState(null);
+
   const getWeeklyExpenses = () => {
     const weeklyData = {};
 
@@ -37,6 +41,10 @@ const WeeklyOverview = ({ expenses = [] }) => {
   const weeklyExpenses = getWeeklyExpenses();
   const maxExpense = Math.max(...weeklyExpenses.map((week) => week.total), 0);
 
+  const toggleWeek = (week) => {
+    setExpandedWeek(expandedWeek === week ? null : week);
+  };
+
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -58,8 +66,10 @@ const WeeklyOverview = ({ expenses = [] }) => {
               key={week}
               className="border border-gray-200 rounded-xl overflow-hidden"
             >
-              <div className="bg-gray-50 p-4">
-             
+              <div
+                className="bg-gray-50 p-4 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+                onClick={() => toggleWeek(week)}
+              >
                 <div className="hidden sm:flex items-center justify-between">
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">Week {week}</h3>
@@ -81,7 +91,6 @@ const WeeklyOverview = ({ expenses = [] }) => {
                   </div>
                 </div>
 
-              
                 <div className="sm:hidden flex flex-col space-y-3">
                   <div className="flex justify-between items-start">
                     <div>
@@ -100,13 +109,44 @@ const WeeklyOverview = ({ expenses = [] }) => {
 
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
                     <div
-                      className="bg-gradient-to-br from-gray-900 via-indigo-600 to-purple-900 h-2.5 rounded-full transition-all duration-500"
+                      className="gradient h-2.5 rounded-full transition-all duration-500"
                       style={{ width: `${(total / maxExpense) * 100}%` }}
                     />
                   </div>
                 </div>
               </div>
-         
+
+              {expandedWeek === week && (
+                <div className="border-t border-gray-200 bg-white">
+                  <div className="p-4 space-y-3 max-h-60 overflow-y-auto">
+                    {details.map((expense, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg"
+                      >
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {expense.title}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {new Date(expense.date).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              }
+                            )}
+                          </p>
+                        </div>
+                        <span className="font-semibold text-red-600">
+                          {formatCurrency(expense.amount)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
