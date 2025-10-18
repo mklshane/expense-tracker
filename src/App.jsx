@@ -3,6 +3,7 @@ import { useExpenses } from "./hooks/useExpense";
 import ExpenseCard from "./components/ExpenseCard";
 import ExpenseModal from "./components/ExpenseModal";
 import SearchFilter from "./components/SearchFilter";
+import ExpenseTable from "./components/ExpenseTable";
 
 const App = () => {
   const { expenses, addExpense, updateExpense, deleteExpense, totalExpenses } =
@@ -18,15 +19,7 @@ const App = () => {
       expense.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEdit = (expense) => {
-    setEditingExpense(expense);
-  };
-
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this expense?")) {
-      deleteExpense(id);
-    }
-  };
+  
  
 
   const handleSaveExpense = (expenseData) => {
@@ -55,7 +48,7 @@ const App = () => {
 
         {/* Expenses Card */}
         <div className="mb-8">
-          <ExpenseCard total={totalExpenses} onAddExpense={handleAddExpense}/>
+          <ExpenseCard total={totalExpenses} onAddExpense={handleAddExpense} />
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
@@ -116,6 +109,10 @@ const App = () => {
           )}
 
           {/* Expense List */}
+          <ExpenseTable
+            expenses={filteredExpenses}
+          
+          />
         </div>
       </main>
 
