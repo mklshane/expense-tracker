@@ -17,7 +17,11 @@ const App = () => {
   const filteredExpenses = expenses.filter(
     (expense) =>
       expense.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      expense.title.toLowerCase().includes(searchTerm.toLowerCase())
+      (expense.tags &&
+        Array.isArray(expense.tags) &&
+        expense.tags.some((tag) =>
+          tag.toLowerCase().includes(searchTerm.toLowerCase())
+        ))
   );
 
   const handleEdit = (expense) => {
