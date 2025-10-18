@@ -3,6 +3,7 @@ import { useState } from "react";
 const WeeklyOverview = ({ expenses = [] }) => {
   const [expandedWeek, setExpandedWeek] = useState(null);
 
+  // Groups expenses by week and aggregates totals
   const getWeeklyExpenses = () => {
     const weeklyData = {};
 
@@ -16,20 +17,27 @@ const WeeklyOverview = ({ expenses = [] }) => {
         if (!weeklyData[key]) {
           weeklyData[key] = { total: 0, details: [] };
         }
+
+        // Accumulate total and push expense into the week's list
         weeklyData[key].total += expense.amount;
         weeklyData[key].details.push(expense);
       });
     }
 
-    return Object.entries(weeklyData)
-      .map(([week, data]) => ({
-        week,
-        total: data.total,
-        details: data.details.sort(
-          (a, b) => new Date(b.date) - new Date(a.date)
-        ),
-      }))
-      .sort((a, b) => b.week.localeCompare(a.week));
+    // Convert the object to a sorted array format
+    return (
+      Object.entries(weeklyData)
+        .map(([week, data]) => ({
+          week,
+          total: data.total,
+          // Sort expenses inside each week by date (newest first)
+          details: data.details.sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          ),
+        }))
+        // Sort weeks in descending order (latest first)
+        .sort((a, b) => b.week.localeCompare(a.week))
+    );
   };
 
   const getWeekNumber = (date) => {
@@ -39,7 +47,12 @@ const WeeklyOverview = ({ expenses = [] }) => {
   };
 
   const weeklyExpenses = getWeeklyExpenses();
-  const maxExpense = Math.max(...weeklyExpenses.map((week) => week.total), 0);
+
+  // ✅ Instead of using maxExpense, use totalExpenses for proportional distribution
+  const totalExpenses = weeklyExpenses.reduce(
+    (sum, week) => sum + week.total,
+    0
+  );
 
   const toggleWeek = (week) => {
     setExpandedWeek(expandedWeek === week ? null : week);
@@ -74,7 +87,8 @@ const WeeklyOverview = ({ expenses = [] }) => {
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">Week {week}</h3>
                     <p className="text-sm text-gray-600 mt-1">
-                      {details.length} expense{details.length !== 1 ? "s" : ""}
+                      {details.length} expense
+                      {details.length !== 1 ? "s" : ""}
                     </p>
                   </div>
 
@@ -82,7 +96,13 @@ const WeeklyOverview = ({ expenses = [] }) => {
                     <div className="w-32 bg-gray-200 rounded-full h-2.5">
                       <div
                         className="bg-gradient-to-br from-gray-900 via-indigo-600 to-purple-900 h-2.5 rounded-full transition-all duration-500"
-                        style={{ width: `${(total / maxExpense) * 100}%` }}
+                        style={{
+                          width: `${
+                            totalExpenses > 0
+                              ? (total / totalExpenses) * 100
+                              : 0
+                          }%`,
+                        }}
                       />
                     </div>
                     <span className="font-bold text-gray-900 text-lg min-w-20 text-right">
@@ -110,7 +130,11 @@ const WeeklyOverview = ({ expenses = [] }) => {
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
                     <div
                       className="gradient h-2.5 rounded-full transition-all duration-500"
-                      style={{ width: `${(total / maxExpense) * 100}%` }}
+                      style={{
+                        width: `${
+                          totalExpenses > 0 ? (total / totalExpenses) * 100 : 0
+                        }%`,
+                      }}
                     />
                   </div>
                 </div>
