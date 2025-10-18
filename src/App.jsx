@@ -50,7 +50,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <main className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <main className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="mb-3 ml-2">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             Expense Tracker
