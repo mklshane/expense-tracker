@@ -4,6 +4,7 @@ import ExpenseCard from "./components/ExpenseCard";
 import ExpenseModal from "./components/ExpenseModal";
 import SearchFilter from "./components/SearchFilter";
 import ExpenseTable from "./components/ExpenseTable";
+import WeeklyOverview from "./components/WeeklyOverview";
 
 const App = () => {
   const { expenses, addExpense, updateExpense, deleteExpense, totalExpenses } =
@@ -45,8 +46,8 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <main className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="mb-8 ml-2">
+      <main className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="mb-3 ml-2">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             Expense Tracker
           </h1>
@@ -54,7 +55,7 @@ const App = () => {
         </div>
 
         {/* Expenses Card */}
-        <div className="mb-8">
+        <div className="mb-5">
           <ExpenseCard total={totalExpenses} onAddExpense={handleAddExpense} />
         </div>
 
@@ -116,11 +117,15 @@ const App = () => {
           )}
 
           {/* Expense List */}
-          <ExpenseTable
-            expenses={filteredExpenses}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+          {activeView === "weekly" ? (
+            <WeeklyOverview expenses={expenses} />
+          ) : (
+            <ExpenseTable
+              expenses={filteredExpenses}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          )}
         </div>
       </main>
 
