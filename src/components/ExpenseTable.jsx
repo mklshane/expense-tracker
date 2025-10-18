@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-const ExpenseTable = ({ expenses }) => {
+const ExpenseTable = ({ expenses, onEdit, onDelete }) => {
+  const [menuOpen, setMenuOpen] = useState(null);
+
+  const toggleMenu = (id) => {
+    setMenuOpen(menuOpen === id ? null : id);
+  };
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -47,6 +53,53 @@ const ExpenseTable = ({ expenses }) => {
           key={expense.id}
           className="bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 hover:border-gray-300 transition-all duration-150 relative"
         >
+          {/* Triple dot menu */}
+          <div className="absolute right-3 top-2">
+            <div className="relative">
+              <button
+                onClick={() => toggleMenu(expense.id)}
+                className="p-1 rounded hover:bg-gray-100 transition-colors duration-150"
+              >
+                <svg
+                  className="w-4 h-4 text-gray-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                  />
+                </svg>
+              </button>
+
+              {menuOpen === expense.id && (
+                <div className="absolute right-0 top-full mt-1 bg-white rounded-md shadow-lg border border-gray-200 z-40 py-1 min-w-28">
+                  <button
+                    onClick={() => {
+                      onEdit(expense);
+                      setMenuOpen(null);
+                    }}
+                    className="flex items-center px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 w-full text-left transition-colors duration-150"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => {
+                      onDelete(expense.id);
+                      setMenuOpen(null);
+                    }}
+                    className="flex items-center px-3 py-1.5 text-sm text-red-600 hover:bg-gray-50 w-full text-left transition-colors duration-150"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="flex items-start justify-between">
             {/* Left side - Title and description */}
             <div className="flex-1 min-w-0 pr-4">

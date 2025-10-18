@@ -11,7 +11,7 @@ const App = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState(null);
   const [activeView, setActiveView] = useState("history");
-   const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const filteredExpenses = expenses.filter(
     (expense) =>
@@ -19,8 +19,15 @@ const App = () => {
       expense.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  
- 
+  const handleEdit = (expense) => {
+    setEditingExpense(expense);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this expense?")) {
+      deleteExpense(id);
+    }
+  };
 
   const handleSaveExpense = (expenseData) => {
     if (editingExpense) {
@@ -111,7 +118,8 @@ const App = () => {
           {/* Expense List */}
           <ExpenseTable
             expenses={filteredExpenses}
-          
+            onEdit={handleEdit}
+            onDelete={handleDelete}
           />
         </div>
       </main>
