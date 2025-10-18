@@ -1,16 +1,94 @@
-# React + Vite
+# Expense Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, mobile-first single-page application (SPA) for tracking and managing expenses. Users can add, edit, delete, and view expenses with weekly summaries and expandable breakdowns. Data is persisted using **localStorage**, so entries remain available on refresh.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+* Add new expenses
+* Edit and delete existing entries
+* Persistent data using `localStorage`
+* Weekly expense overview with collapsible breakdown
+* Progress bars showing proportional weekly totals
+* Mobile-first responsive UI
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* **React (Vite)**
+* **Tailwind CSS**
+* **JavaScript (ES6+)**
+* **LocalStorage**
+
+---
+
+## Getting Started
+
+Follow these exact steps to run the app.
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/mklshane/expense-tracker.git
+```
+
+```bash
+cd expense-tracker
+```
+
+### 🔹 Install Dependencies
+
+```bash
+npm install
+```
+
+### Start the Development Server
+
+```bash
+npm run dev
+```
+
+After running the command, Vite will show a local URL like:
+
+```
+http://localhost:5173
+```
+
+Open it in your browser to use the app.
+
+---
+
+
+## Project Structure
+
+```
+expense-tracker/
+│
+├── src/
+│   ├── components/
+│   │   ├── ExpenseCard.jsx
+│   │   ├── ExpenseModal.jsx
+│   │   ├── ExpenseTable.jsx
+│   │   ├── SearchFilter.jsx
+│   │   └── WeeklyOverview.jsx
+│   ├── hooks/
+│   │   └── useExpense.js
+│   ├── App.jsx
+│   └── main.jsx
+│
+├── public/
+├── package.json
+├── vite.config.js
+└── README.md
+```
+
+---
+
+## Notes for Reviewers 
+
+* No backend or database setup is required.
+* Data is stored in `localStorage`, so entries persist automatically.
+
+
